@@ -1,0 +1,4 @@
+*.o
+*.so
+*.import.scm
+tila

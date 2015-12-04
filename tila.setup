@@ -1,0 +1,10 @@
+(compile -j tila-core -s tila-core.scm)
+(compile -o tila main.scm)
+
+(install-extension
+ 'tila
+ '("tila.so" "tila-core.import.scm"))
+
+(install-program
+ 'tila
+ '("tila"))
