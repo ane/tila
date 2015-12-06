@@ -1,8 +1,8 @@
-(require-extension tila-core
-                   srfi-1
-                   srfi-13
-                   srfi-34
-                   extras)
+(use tila-core
+     srfi-1
+     srfi-13
+     srfi-34
+     extras)
 
 (define *default-config*
   `(,(string-append (get-environment-variable "HOME") "/.tila")
@@ -55,4 +55,3 @@
                (tila-elements state))
           (raise 'no-state)))))
 
-(start-tila)
