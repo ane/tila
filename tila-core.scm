@@ -18,7 +18,6 @@
 (use srfi-19
      srfi-1
      srfi-13
-     srfi-34
      medea
      extras)
 
@@ -36,8 +35,12 @@
   (proc element-proc)
   (color element-color))
 
-(define (element proc #!key (color "#ffffff"))
-  (make-element proc color))
+(define (element proc #!key (args '()) (color "#ffffff"))
+  (let ((newproc
+         (cond
+          ((string? proc) (lambda () proc))
+          ((procedure? proc) (lambda () (apply proc args))))))
+    (make-element (lambda () (apply newproc args)) color))) 
 
 (define (tila output #!rest elems)
   (set! *tila-state* (make-tila output elems)))

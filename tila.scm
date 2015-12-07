@@ -1,6 +1,5 @@
 (use srfi-1
      srfi-13
-     srfi-34
      medea
      extras)
 
@@ -24,7 +23,7 @@
     (if (and (string? cfg)
              (not (string-null? cfg)))
         (load cfg)
-        (raise 'no-config))))
+        (abort (make-property-condition 'no-config 'message "No config file found.")))))
 
 (define (say-config-missing)
   (display "No configuration file found. Make sure one of these files exists: \n\n")
@@ -44,19 +43,6 @@
   (proc)
   (exit 1))
 
-(define (run-tila)
-  (guard (e [(eq? e 'no-config) (report-and-exit say-config-missing)]
-            [(eq? e 'no-state)  (report-and-exit say-state-missing)])
-    (load-config)
-    (let ((state (get-tila-state)))
-      (if state
-          (map (lambda (element)
-                 (format #t "An element is saying: ~a and it's color is: ~a\n"
-                         ((element-proc element))
-                         (element-color element)))
-               (tila-elements state))
-          (raise 'no-state)))))
-
 (define (begin-tila-i3 initial-state)
   (define interval 1)
   (define (prn-status-and-sleep state)
@@ -74,15 +60,35 @@
       (prn-status-and-sleep initial-state)
       (tila-loop #t))))
 
-(define (begin-tila)
-  (guard (e [(eq? e 'no-config) (report-and-exit say-config-missing)]
-            [(eq? e 'no-state)  (report-and-exit say-state-missing)])
-    (load-config)
-    (define state (get-tila-state))
-    (if state
-        (cond
-         ((eq? (tila-target state) 'i3)
-          (begin-tila-i3 state)))
-        (raise 'no-state))))
+(define (start-running-tila state)
+  (cond
+   ((eq? (tila-target state) 'i3)
+    (begin-tila-i3 state))
+   (else (begin-tila-i3 state))))
 
-(begin-tila)
+(define (begin-tila)
+  (condition-case
+      (begin
+        (load-config)
+        (define state (get-tila-state))
+        (if state
+            (start-running-tila state)
+            (abort (make-condition-property 'no-state
+                                            'message "No tila configuration loaded."))))
+    [e (no-config) (report-and-exit say-config-missing)]
+    [e (no-state) (report-and-exit say-state-missing)]
+    [e (exn runtime) (start-running-tila
+           (tila 'i3 (element
+                         (format #f "ERROR: Failed to load your config: ~a: ~a."
+                                 (get-condition-property e 'exn 'message)
+                                 (get-condition-property e 'exn 'arguments))
+                       #:color "red")))]
+    [e (user-interrupt) (display "Interrupted.") (newline)]
+    [e () (format #t "Something weird: ~a~%.")]))
+
+
+;; don't run if we're inside a REPL
+(unless (string-suffix? "csi" (program-name))
+  (begin-tila))
+
+
