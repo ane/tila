@@ -1,13 +1,9 @@
 ; -*- scheme -*-
 ((license "GPLv3")
-
  (category os)
-
  (needs (medea "0.1.8")
         (srfi-19 "3.3.6")
         (srfi-34 "0.6"))
-
  (test-depends test)
-
  (author "Antoine Kalmbach")
  (synopsis "Display system status information"))
