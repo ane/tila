@@ -1,11 +1,11 @@
 ![tila](./doc/tila_small.png)
 
-### A system monitoring program for status bars like i3bar, dzen and xmobar.
+##### A system monitoring program for status bars like i3bar, dzen and xmobar.
 
-**Tila** is configured using a high-level programming language called **Scheme**,
-instead of relying on ad-hoc DSLs that are tricky to extend.
+**tila** is configured using a high-level programming language called **Scheme**,
+instead of relying on ad-hoc configuration file language DSLs that are tricky to extend. This lets you write powerful status display modules without running into the limitations of shell scripts.
 
-**Tila** currently supports only **i3** and is very, very early stage.
+tila currently supports only **i3** and is very, very early stage.
 
 A simple configuration looks like this:
 
