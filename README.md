@@ -14,10 +14,22 @@ A simple configuration looks like this:
 
 (tila 'i3
     (element hostname)
-    (element date-and-time))
+    (element date-and-time #:color "red"))
 ```
 
 This will print the system hostname and the current date.
+
+## Supported elements
+
+* `hostname` - get the system hostname
+* `date-and-time` - current date & time
+* `say-hello` - says hello
+
+Writing your own is easy. All you need is a function that returns a string. So
+even `(element (lambda () "blah"))` will work.
+
+The config syntax is being worked on, though. Currently they need to be
+zero-parameter functions.
 
 ## Installation
 
@@ -35,6 +47,9 @@ Add the line `status_command tila` to your `bar` section in your i3 config.
 ### Others
 
 Not implemented yet.
+
+
+######
 
 ## License
 
