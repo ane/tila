@@ -7,6 +7,8 @@
                    element-proc
                    element-color
                    get-tila-state
+                   process-elements
+                   print-tila
                    hostname
                    say-hello
                    date-and-time)
@@ -34,7 +36,7 @@
   (proc element-proc)
   (color element-color))
 
-(define (element proc #!key (color 'white))
+(define (element proc #!key (color "#ffffff"))
   (make-element proc color))
 
 (define (tila output #!rest elems)
@@ -47,18 +49,21 @@
     (map-in-order
      (lambda (element)
        (let* ((proc (element-proc element))
+              (kolor (element-color element))
               (info (procedure-information proc)))
-         `((full_text . ,(proc))
-           ("version" . ,(element-color element)))))
+         `((name . "derp")
+           (full_text . ,(proc))
+           )))
      elements)))
 
-(define (print-to-json tila)
-  (write-json (process-elements tila)))
+(define (output-to-i3 tila)
+  (let ((processed (process-elements tila)))
+    (json->string (list->vector processed))))
 
-(define (tila-print tila)
+(define (print-tila tila)
   (cond
    ((eq? (tila-target tila) 'json)
-    (display "pladf")) 
+    (output-to-i3 tila)) 
    (else (display "asdf"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -71,6 +76,4 @@
   (get-host-name))
 
 (define (date-and-time #!optional (format "~Y-~m-~d ~H:~M:~S"))
-  (format-date format (current-date)))
-
-)
+  (format-date format (current-date))))

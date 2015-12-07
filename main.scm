@@ -1,8 +1,10 @@
-(use tila-core
-     srfi-1
+(use srfi-1
      srfi-13
      srfi-34
+     medea
      extras)
+
+(import tila-core)
 
 (define *default-config*
   `(,(string-append (get-environment-variable "HOME") "/.tila")
@@ -42,7 +44,7 @@
   (proc)
   (exit 1))
 
-(define (start-tila)
+(define (run-tila)
   (guard (e [(eq? e 'no-config) (report-and-exit say-config-missing)]
             [(eq? e 'no-state)  (report-and-exit say-state-missing)])
     (load-config)
@@ -55,3 +57,25 @@
                (tila-elements state))
           (raise 'no-state)))))
 
+(define (begin-tila)
+  (guard (e [(eq? e 'no-config) (report-and-exit say-config-missing)]
+            [(eq? e 'no-state)  (report-and-exit say-state-missing)])
+    (load-config)
+    (define state (get-tila-state))
+    (define interval 1)
+    (define (prn-status-and-sleep)
+      (format (current-output-port) "~a~%" (string-append "," (print-tila state)))
+      (flush-output (current-output-port))
+      (sleep interval))
+    (if state
+        (begin
+          (format #t "{ \"version\": 1 }~%")
+          (format #t "[~%")                ; infinite array
+          (format #t "[]~%")
+          (prn-status-and-sleep)
+          (let tila-loop ((foo #t))
+            (prn-status-and-sleep)
+            (tila-loop #t)))
+        (raise 'no-state))))
+
+(begin-tila)
