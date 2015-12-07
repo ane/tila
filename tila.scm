@@ -57,25 +57,32 @@
                (tila-elements state))
           (raise 'no-state)))))
 
+(define (begin-tila-i3 initial-state)
+  (define interval 1)
+  (define (prn-status-and-sleep state)
+    (format (current-output-port)    ; stdout
+            "~a~%"               
+            (string-append "," (print-tila state 'json)))
+    (flush-output (current-output-port))
+    (sleep interval))
+  (begin
+    (format #t "{ \"version\": 1 }~%")
+    (format #t "[~%")                ; infinite array
+    (format #t "[]~%")
+    (prn-status-and-sleep initial-state)
+    (let tila-loop ((foo #t))
+      (prn-status-and-sleep initial-state)
+      (tila-loop #t))))
+
 (define (begin-tila)
   (guard (e [(eq? e 'no-config) (report-and-exit say-config-missing)]
             [(eq? e 'no-state)  (report-and-exit say-state-missing)])
     (load-config)
     (define state (get-tila-state))
-    (define interval 1)
-    (define (prn-status-and-sleep)
-      (format (current-output-port) "~a~%" (string-append "," (print-tila state)))
-      (flush-output (current-output-port))
-      (sleep interval))
     (if state
-        (begin
-          (format #t "{ \"version\": 1 }~%")
-          (format #t "[~%")                ; infinite array
-          (format #t "[]~%")
-          (prn-status-and-sleep)
-          (let tila-loop ((foo #t))
-            (prn-status-and-sleep)
-            (tila-loop #t)))
+        (cond
+         ((eq? (tila-target state) 'i3)
+          (begin-tila-i3 state)))
         (raise 'no-state))))
 
 (begin-tila)

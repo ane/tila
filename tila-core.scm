@@ -51,18 +51,22 @@
        (let* ((proc (element-proc element))
               (kolor (element-color element))
               (info (procedure-information proc)))
-         `((name . "derp")
-           (full_text . ,(proc))
-           )))
+         `((full_text . ,(proc))
+           (color . ,(cond
+                      ((symbol? kolor)
+                       (symbol->string kolor))
+                      ((string? kolor)
+                       kolor)
+                      (else "#ffffff"))))))
      elements)))
 
 (define (output-to-i3 tila)
   (let ((processed (process-elements tila)))
     (json->string (list->vector processed))))
 
-(define (print-tila tila)
+(define (print-tila tila fmt)
   (cond
-   ((eq? (tila-target tila) 'json)
+   ((eq? fmt 'json)
     (output-to-i3 tila)) 
    (else (display "asdf"))))
 

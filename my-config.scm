@@ -3,6 +3,6 @@
 
 (use tila-core)
 
-(tila 'json
+(tila 'i3
       (element hostname)
       (element date-and-time))

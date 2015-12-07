@@ -1,6 +1,6 @@
 (compile -s -O3 -d1 tila-core.scm -j tila-core)
 (compile -s -O3 -d0 tila-core.import.scm)
-(compile -O3 -o tila main.scm)
+(compile -O3 -o tila tila.scm)
 
 (install-extension
  'tila
