@@ -1,4 +1,4 @@
-# tila
+# ![tila](./doc/tila_small.png)
 
 A system monitoring program for status bars like i3bar, dzen and xmobar.
 
