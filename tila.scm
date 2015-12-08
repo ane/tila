@@ -1,6 +1,8 @@
 (use srfi-1
      srfi-13
+     srfi-18 ; repl thread
      medea
+     nrepl
      extras)
 
 (import tila-core)
@@ -45,20 +47,19 @@
 
 (define (begin-tila-i3 initial-state)
   (define interval 1)
+  (define stdout (open-output-file* fileno/stdout))
   (define (prn-status-and-sleep state)
-    (format (current-output-port)    ; stdout
-            "~a~%"               
-            (string-append "," (print-tila state 'json)))
-    (flush-output (current-output-port))
-    (sleep interval))
+    (format stdout "~a~%" (string-append "," (print-tila state 'json)))
+    (flush-output stdout)
+    (thread-sleep! interval))
   (begin
-    (format #t "{ \"version\": 1 }~%")
-    (format #t "[~%")                ; infinite array
-    (format #t "[]~%")
+    (format stdout "{ \"version\": 1 }~%")
+    (format stdout "[~%")                ; infinite array
+    (format stdout "[]~%")
     (prn-status-and-sleep initial-state)
-    (let tila-loop ((foo #t))
+    (let tila-loop ()
       (prn-status-and-sleep initial-state)
-      (tila-loop #t))))
+      (tila-loop))))
 
 (define (start-running-tila state)
   (cond
@@ -77,18 +78,16 @@
                                             'message "No tila configuration loaded."))))
     [e (no-config) (report-and-exit say-config-missing)]
     [e (no-state) (report-and-exit say-state-missing)]
-    [e (exn runtime) (start-running-tila
+    [e (exn) (start-running-tila
            (tila 'i3 (element
                          (format #f "ERROR: Failed to load your config: ~a: ~a."
                                  (get-condition-property e 'exn 'message)
                                  (get-condition-property e 'exn 'arguments))
                        #:color "red")))]
-    [e (user-interrupt) (display "Interrupted.") (newline)]
-    [e () (format #t "Something weird: ~a~%.")]))
+    [e (user-interrupt) (display "Interrupted.") (newline)]))
 
-
-;; don't run if we're inside a REPL
 (unless (string-suffix? "csi" (program-name))
+  (define repl-thread (thread-start! (lambda () (nrepl 12345))))
   (begin-tila))
 
 

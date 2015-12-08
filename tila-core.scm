@@ -11,15 +11,20 @@
                    print-tila
                    hostname
                    say-hello
-                   date-and-time)
+                   date-and-time
+                   )
 
 (import chicken scheme posix)
-
+(reexport tila-ffi)
+(use tila-ffi)
 (use srfi-19
      srfi-1
      srfi-13
      medea
+     bind
+     system
      extras)
+
 
 (define *tila-state* #f)
 
@@ -40,7 +45,7 @@
          (cond
           ((string? proc) (lambda () proc))
           ((procedure? proc) (lambda () (apply proc args))))))
-    (make-element (lambda () (apply newproc args)) color))) 
+    (make-element newproc color))) 
 
 (define (tila output #!rest elems)
   (set! *tila-state* (make-tila output elems)))
@@ -73,14 +78,15 @@
     (output-to-i3 tila)) 
    (else (display "asdf"))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (say-hello)
-  "Hi there!")
+  "sup")
 
 (define (hostname)
   (get-host-name))
 
 (define (date-and-time #!optional (format "~Y-~m-~d ~H:~M:~S"))
-  (format-date format (current-date))))
+  (format-date format (current-date)))
+
+)
