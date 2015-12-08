@@ -21,16 +21,18 @@ This will print the system hostname and the current date.
 
 ## Supported elements
 
-<dl>
-<dt> hostname</dt>
-<dd>get the system hostname</dd>
-<dt>date-and-time [FMT]</dt>
-<dd>print current date & time. `FMT` is an optional string in the [SRFI-19](http://srfi.schemers.org/srfi-19/srfi-19.html) format.
-<dt>say-hello</dt> 
-<dd>says hello</dd>
-<dt>load-average [COUNT]</dt>
-<dd>print load average, where `COUNT` is a number from 1 to 3, specifying how many to print of the 1m, 5m and 15m load averages</dd>
-</dl>
+#### `hostname`
+get the system hostname
+
+#### `date-and-time [FMT]`
+print current date & time. `FMT` is an optional string in the [SRFI-19](http://srfi.schemers.org/srfi-19/srfi-19.html) format.
+  
+#### `say-hello`
+says hello
+
+#### `load-average [COUNT]`
+print load average, where `COUNT` is a number from 1 to 3, specifying how many to print of the 1m, 5m and 15m load averages
+
 
 Writing your own is easy. The element procedure can be either a string or a zero-parameter function (thunk) that returns a string.
 
