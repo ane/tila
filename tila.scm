@@ -2,7 +2,6 @@
      srfi-13
      srfi-18 ; repl thread
      medea
-     nrepl
      extras)
 
 (import tila-core)
@@ -87,7 +86,6 @@
     [e (user-interrupt) (display "Interrupted.") (newline)]))
 
 (unless (string-suffix? "csi" (program-name))
-  (define repl-thread (thread-start! (lambda () (nrepl 12345))))
   (begin-tila))
 
 

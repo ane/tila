@@ -10,7 +10,7 @@ tila currently supports only **i3** and is very, very early stage.
 A simple configuration looks like this:
 
 ```scheme
-(import tila-core)
+(use tila-core)
 
 (tila 'i3
     (element hostname)
@@ -24,6 +24,8 @@ This will print the system hostname and the current date.
 * `hostname` - get the system hostname
 * `date-and-time` - current date & time
 * `say-hello` - says hello
+* `load-average <COUNT>` - print load average, where `COUNT` is a number from 1
+  to 3, specifying how many to print of the 1m, 5m and 15m load averages
 
 Writing your own is easy. All you need is a function that returns a string. So
 even `(element (lambda () "blah"))` will work.
