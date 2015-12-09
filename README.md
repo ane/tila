@@ -1,4 +1,5 @@
 ![tila](./doc/tila_small.png)
+https://api.travis-ci.org/ane/tila.svg
 
 ##### A system monitoring program to be used with X status bar programs like i3bar, dzen2 and xmobar.
 
