@@ -2,6 +2,7 @@
                    tila?
                    tila-target
                    tila-elements
+                   tila-default-color
                    element
                    element?
                    element-proc
@@ -30,10 +31,10 @@
 (define *tila-state* #f)
 
 (define-record-type <tila>
-  (make-tila target dcolor elements)
+  (make-tila target default-color elements)
   tila?
   (target tila-target)
-  (dclor tila-dcolor)
+  (default-color tila-default-color)
   (elements tila-elements))
 
 (define-record-type <element>
