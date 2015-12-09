@@ -4,7 +4,7 @@
      medea
      extras)
 
-(import tila-core)
+(use tila-core)
 
 (define *default-config*
   `(,(string-append (get-environment-variable "HOME") "/.tila")
@@ -15,8 +15,7 @@
 
 (define (get-config)
   (let ((cfgs (filter file-exists? *default-config*)))
-    (unless (null-list? cfgs)
-        (car cfgs))))
+    (and (not (null? cfgs)) (first cfgs))))
 
 (define (load-config)
   (set! *tila-state* #f)
@@ -73,16 +72,17 @@
         (define state (get-tila-state))
         (if state
             (start-running-tila state)
-            (abort (make-condition-property 'no-state
-                                            'message "No tila configuration loaded."))))
+            (abort
+             (make-property-condition 'no-state 'message "No tila configuration loaded."))))
     [e (no-config) (report-and-exit say-config-missing)]
-    [e (no-state) (report-and-exit say-state-missing)]
+    [e (no-state)  (report-and-exit say-state-missing)]
     [e (exn) (start-running-tila
-           (tila 'i3 (element
-                         (format #f "ERROR: Failed to load your config: ~a: ~a."
-                                 (get-condition-property e 'exn 'message)
-                                 (get-condition-property e 'exn 'arguments))
-                       #:color "red")))]
+              (tila '((output . i3))
+                    (element
+                        (format #f "ERROR: Failed to load your config: ~a: ~a."
+                                (get-condition-property e 'exn 'message)
+                                (get-condition-property e 'exn 'arguments))
+                      #:color "red")))]
     [e (user-interrupt) (display "Interrupted.") (newline)]))
 
 (unless (string-suffix? "csi" (program-name))

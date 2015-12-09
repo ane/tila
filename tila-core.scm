@@ -14,9 +14,11 @@
                    date-and-time
                    )
 
-(import chicken scheme posix)
+(import chicken scheme data-structures posix)
 (reexport tila-ffi)
+
 (use tila-ffi)
+
 (use srfi-19
      srfi-1
      srfi-13
@@ -25,13 +27,13 @@
      system
      extras)
 
-
 (define *tila-state* #f)
 
 (define-record-type <tila>
-  (make-tila target elements)
+  (make-tila target dcolor elements)
   tila?
   (target tila-target)
+  (dclor tila-dcolor)
   (elements tila-elements))
 
 (define-record-type <element>
@@ -47,8 +49,10 @@
           ((procedure? proc) (lambda () (apply proc args))))))
     (make-element newproc color))) 
 
-(define (tila output #!rest elems)
-  (set! *tila-state* (make-tila output elems)))
+(define (tila config #!rest elements)
+  (let ((output (alist-ref 'output config eqv? 'i3))
+        (color  (alist-ref 'color  config eqv? 'white)))
+    (set! *tila-state* (make-tila output color elements))))
 
 (define (get-tila-state) *tila-state*)
 

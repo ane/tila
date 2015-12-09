@@ -1,9 +1,11 @@
 ![tila](./doc/tila_small.png)
 
-##### A system monitoring program for status bars like i3bar, dzen and xmobar.
+##### A system monitoring program to be used with X status bar programs like i3bar, dzen2 and xmobar.
 
-**tila** is configured using a high-level programming language called **Scheme**,
-instead of relying on ad-hoc configuration file language DSLs that are tricky to extend. This lets you write powerful status display modules without running into the limitations of shell scripts.
+**tila** is performant an extensible. **tila** is configured using a high-level
+programming language called **Scheme**, instead of relying on a custom
+configuration language. This lets you wield the power of a full programming
+language when creating your displays.
 
 tila currently supports only **i3** and is very, very early stage.
 
@@ -12,14 +14,34 @@ A simple configuration looks like this:
 ```scheme
 (use tila-core)
 
-(tila 'i3
+(tila '((output . i3))
     (element hostname)
     (element date-and-time #:color "red"))
 ```
 
 This will print the system hostname and the current date.
 
-## Supported elements
+### Configuration structure
+
+The configuration is created using the `tila` procedure.
+
+#### `tila config elements...`
+
+The config is an association list of the form `'((key . value) ...)`. The
+following options are available:
+
+* `output`
+    * `i3` (default)
+* `color`
+    * the default color for all elements either a color name or a hex RGB
+    (`#00BBCC`), defaults to `white`
+
+#### `element procedure|string [#:color <color>]`
+  
+Specifies an **element**. The procedure is either a zero-parameter function (a
+thunk) or a string. The optional color keyword argument specifies the color used.
+
+### Supported elements
 
 #### `hostname`
 get the system hostname
@@ -32,9 +54,6 @@ says hello
 
 #### `load-average [COUNT]`
 print load average, where `COUNT` is a number from 1 to 3, specifying how many to print of the 1m, 5m and 15m load averages
-
-
-Writing your own is easy. The element procedure can be either a string or a zero-parameter function (thunk) that returns a string.
 
 ## Installation
 
