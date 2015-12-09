@@ -2,14 +2,11 @@
 
 ![travis build status](https://api.travis-ci.org/ane/tila.svg)
 
-##### A system monitoring program to be used with X status bar programs like i3bar, dzen2 and xmobar.
+##### An extensible system monitoring program for X status bar displays like i3bar, dzen2 and xmobar.
 
-**tila** is performant an extensible. **tila** is configured using a high-level
-programming language called **Scheme**, instead of relying on a custom
-configuration language. This lets you wield the power of a full programming
-language when creating your displays.
+**tila** is offers fast performance and extensibility, and is configured using **Scheme**, a high-level programming language, providing powerful extension features, while at the same time offering a simple configuration syntax.
 
-tila currently supports only **i3** and is very, very early stage.
+**NOTE:** tila currently supports *only i3* and is very, very early stage.
 
 A simple configuration looks like this:
 
@@ -27,7 +24,7 @@ This will print the system hostname and the current date.
 
 The configuration is created using the `tila` procedure.
 
-#### `tila config elements...`
+##### `(tila <config> <elements...>)`
 
 The config is an association list of the form `'((key . value) ...)`. The
 following options are available:
@@ -38,23 +35,23 @@ following options are available:
     * the default color for all elements either a color name or a hex RGB
     (`#00BBCC`), defaults to `white`
 
-#### `element procedure|string [#:color <color>]`
+##### `(element <procedure|string> [#:color <color>])`
   
 Specifies an **element**. The procedure is either a zero-parameter function (a
 thunk) or a string. The optional color keyword argument specifies the color used.
 
 ### Supported elements
 
-#### `hostname`
+##### `hostname`
 get the system hostname
 
-#### `date-and-time [FMT]`
+##### `date-and-time [FMT]`
 print current date & time. `FMT` is an optional string in the [SRFI-19](http://srfi.schemers.org/srfi-19/srfi-19.html) format.
   
-#### `say-hello`
+##### `say-hello`
 says hello
 
-#### `load-average [COUNT]`
+##### `load-average [COUNT]`
 print load average, where `COUNT` is a number from 1 to 3, specifying how many to print of the 1m, 5m and 15m load averages
 
 ## Installation
