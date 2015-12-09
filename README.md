@@ -4,7 +4,7 @@
 
 ##### An extensible system monitoring program for X status bar displays like i3bar, dzen2 and xmobar.
 
-**tila** is offers fast performance and extensibility, and is configured using **Scheme**, a high-level programming language, providing powerful extension features, while at the same time offering a simple configuration syntax.
+**tila** offers fast performance and is configured using **Scheme**, a high-level programming language, providing powerful extensibility, while at the same time offering a simple configuration syntax.
 
 **NOTE:** tila currently supports *only i3* and is very, very early stage.
 
