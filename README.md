@@ -20,7 +20,21 @@ A simple configuration looks like this:
 
 This will print the system hostname and the current date.
 
-### Configuration structure
+### Supported elements
+
+##### `hostname`
+get the system hostname
+
+##### `date-and-time [FMT]`
+print current date & time. `FMT` is an optional string in the [SRFI-19](http://srfi.schemers.org/srfi-19/srfi-19.html) format.
+  
+##### `say-hello`
+says hello
+
+##### `load-average [COUNT]`
+print load average, where `COUNT` is a number from 1 to 3, specifying how many to print of the 1m, 5m and 15m load averages
+
+### Configuration syntax
 
 The configuration is created using the `tila` procedure.
 
@@ -39,20 +53,6 @@ following options are available:
   
 Specifies an **element**. The procedure is either a zero-parameter function (a
 thunk) or a string. The optional color keyword argument specifies the color used.
-
-### Supported elements
-
-##### `hostname`
-get the system hostname
-
-##### `date-and-time [FMT]`
-print current date & time. `FMT` is an optional string in the [SRFI-19](http://srfi.schemers.org/srfi-19/srfi-19.html) format.
-  
-##### `say-hello`
-says hello
-
-##### `load-average [COUNT]`
-print load average, where `COUNT` is a number from 1 to 3, specifying how many to print of the 1m, 5m and 15m load averages
 
 ## Installation
 
