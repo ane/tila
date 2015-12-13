@@ -1,4 +1,4 @@
-# ![tila](./doc/tila_small.png)
+![tila](./doc/tila_small.png)
 
 ![travis build status](https://api.travis-ci.org/ane/tila.svg)
 
@@ -13,12 +13,14 @@ A simple configuration looks like this:
 ```scheme
 (use tila-core)
 
-(tila '((output . i3))
-    (element hostname)
+(tila '((output . i3))       ; configuration
+    (element hostname)       ; elements...
     (element date-and-time #:color "red"))
 ```
 
 This will print the system hostname and the current date.
+
+--
 
 ### Supported elements
 
