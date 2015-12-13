@@ -23,6 +23,9 @@ This will print the system hostname and the current date.
 
 * [Supported elements](#supported-elements)
 * [Configuration](#configuration)
+* [Installation](#installation)
+      * [i3](#for-i3)
+* [License](#license)
 
 --
 
