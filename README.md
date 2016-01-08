@@ -19,15 +19,13 @@ A simple configuration looks like this:
 
 This will print the system hostname and the current date.
 
---
+**Table of Contents**
 
-* [Supported elements](#supported-elements)
-* [Configuration](#configuration)
-* [Installation](#installation)
-      * [i3](#for-i3)
-* [License](#license)
-
---
+- [Supported elements](#supported-elements)
+- [Configuration](#configuration)
+- [Installation](#installation)
+    - [i3](#for-i3)
+- [License](#license)
 
 # Supported elements
 
