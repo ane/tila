@@ -1,4 +1,5 @@
 language: C
+sudo: false
 addons:
   apt:
     packages:
