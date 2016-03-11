@@ -1,11 +1,9 @@
 # ![tila](./doc/tila_small.png)
 ![travis build status](https://api.travis-ci.org/ane/tila.svg)
 
-##### An extensible system monitoring program for X status bar displays like i3bar, dzen2 and xmobar.
+##### tila provides system information for the i3 status bar.
 
-**tila** offers fast performance and is configured using **Scheme**, a high-level programming language, providing powerful extensibility, while at the same time offering a simple configuration syntax.
-
-**NOTE:** tila currently supports *only i3* and is very, very early stage.
+**NOTE:** this is not under active development
 
 A simple configuration looks like this:
 
@@ -18,14 +16,6 @@ A simple configuration looks like this:
 ```
 
 This will print the system hostname and the current date.
-
-**Table of Contents**
-
-- [Supported elements](#supported-elements)
-- [Configuration](#configuration)
-- [Installation](#installation)
-    - [i3](#for-i3)
-- [License](#license)
 
 # Supported elements
 
@@ -72,14 +62,6 @@ implementation. You need it installed to run tila. Chicken should be available i
 To build tila, clone this repo and change to its directory and run
 `chicken-install -s`. This will put the tila executable in your path. Create the
 file `~/.tila` using the example above.
-
-### For i3
-
-Add the line `status_command tila` to your `bar` section in your i3 config.
-
-### Others
-
-Not implemented yet.
 
 # License
 
