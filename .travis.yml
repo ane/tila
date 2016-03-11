@@ -3,6 +3,8 @@ addons:
   apt:
     packages:
     - chicken-bin
+    - libchicken-dev
+    - libchicken6
 script: 
   - chicken -version
   - chicken-install -s -test
