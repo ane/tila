@@ -1,0 +1,6 @@
+[submodule "vendor/lua"]
+	path = vendor/lua
+	url = https://github.com/lua/lua.git
+[submodule "vendor/jeejah"]
+	path = vendor/jeejah
+	url = git@gitlab.com:technomancy/jeejah.git

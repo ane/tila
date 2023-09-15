@@ -1,0 +1,96 @@
+const std = @import("std");
+const net = std.net;
+const lua = @import("lua.zig");
+
+const Context = @import("Context.zig");
+const Self = @This();
+
+const log = std.log.scoped(.server);
+
+ctx: *Context,
+address: net.Address,
+clients: std.ArrayList(*Client),
+allocator: *std.mem.Allocator,
+
+pub fn init(self: *Self, allocator: *std.mem.Allocator, context: *Context, host: []const u8, port: u16) !void {
+    self.* = .{
+        .ctx = context,
+        .address = try net.Address.parseIp4(host, port),
+        .clients = std.ArrayList(*Client).init(allocator),
+        .allocator = allocator,
+    };
+}
+
+pub fn waitForConnections(self: *Self) !void {
+    var server = net.StreamServer.init(.{});
+    defer server.deinit();
+
+    try server.listen(self.address);
+    log.info("Lua REPL server listening at {}", .{server.listen_address});
+
+    while (true) {
+        var client = try self.allocator.create(Client);
+        client.* = Client{
+            .conn = try server.accept(),
+            .handle_frame = async client.handle(self.allocator, self.context.lua),
+        };
+        // try self.clients.append(client);
+    }
+}
+
+// pub fn deinit(self: *Self) void {
+//     for (self.clients.toOwnedSlice()) |client| {
+//         client.deinit();
+//         self.allocator.destroy(client);
+//     }
+// }
+
+const Client = struct {
+    conn: net.StreamServer.Connection,
+    handle_frame: @Frame(handle),
+
+    fn deinit(self: *Client) void {
+        self.conn.stream.close();
+    }
+
+    fn handle(self: *Client, allocator: *std.mem.Allocator, luaState: *lua.lua_State) anyerror!void {
+        _ = try self.conn.stream.write("server: welcome to the Lua REPL\n");
+
+        while (true) { _ = try self.conn.stream.write("> "); var buf:
+            [100]u8 = undefined; if (self.conn.stream.read(&buf))
+            |amt| { if (amt == 0) { log.info("client disconnected",
+            .{}); self.conn.stream.close(); break; } const msg = buf[0
+            .. amt - 1]; log.info("read ({} bytes): '{s}'", .{ amt -
+            1, msg });
+
+                // wrap in "return "foo""
+                const str = try std.fmt.allocPrintZ(allocator, "return {s};", .{msg});
+                defer allocator.free(str);
+
+                log.info("sending {s}", .{str});
+                const loadRes = lua.luaL_loadbufferx(luaState, str.ptr, str.len, "repl", null);
+                if (loadRes != lua.LUA_OK) {
+                    _ = try self.conn.stream.write("syntax error, try again!\n");
+                    const vod = lua.lua_tolstring(luaState, -1, null);
+                    log.debug("read result: {s}", .{vod});
+                    continue;
+                }
+                log.info("load: {}", .{loadRes});
+                const res = lua.lua_pcallk(luaState, 0, lua.LUA_MULTRET, 0, 0, null);
+                log.info("eval: {}", .{res});
+                if (res != lua.LUA_OK) {
+                    std.debug.warn("lua error: {s}", .{lua.luaL_checklstring(luaState, -1, null)});
+                }
+                const rob = lua.lua_tolstring(luaState, -1, null);
+                log.info("result: {s}", .{rob});
+                const resp: []const u8 = try std.fmt.allocPrint(allocator, "{s}\n", .{rob});
+                defer allocator.free(resp);
+                _ = try self.conn.stream.write(resp);
+            } else |err| {
+                log.warn("error reading from conn {s}", .{@errorName(err)});
+                break;
+            }
+            std.time.sleep(100_000_000);
+        }
+    }
+};
